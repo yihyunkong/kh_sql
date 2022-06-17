@@ -1,0 +1,32 @@
+뷰에 대한 대해서...
+뷰SQL이지 뷰테이블은 잘못된 표현이다.
+물리적인 저장공간을 가지고 있지 않다.
+데이터가 만들어지는게 아니라 SQL만 가지고 있다.
+CREATE VIEW emp_view(E_NO,E_NAME)
+AS SELECT empno, ename
+     FROM emp
+    WHERE deptno='10'
+뷰를 만들려면 뷰에 대한 생성권한이 있어야 한다.
+sys계정에서 아래 구문 실행한 후 뷰생성 가능함.
+grant create view to scott with admin option;
+1.시큐리티
+테이블을 그대로 보여주는것은 문제가 있겠다.
+인터넷뱅킹에서 일정기간동안에 데이터만 접근가능하게 한다.
+1년전 데이터를 보여달라면 db블럭버퍼가 hit ration이 떨어진다.
+1주일 데이터만 볼 수 있게 할때
+2.복잡한 쿼리대신 간단히 사용하기 위해
+사용자가 조인걸고 할 수 없으므로 튜닝한 뷰를 사용하게 할 때.
+3.퍼포먼스를 높이기 위해서 사용
+CREATE VIEW emp_dept
+SELECT b.dname, a.deptno, a.empno, a.ename
+ FROM emp a, dept b
+WHERE a.deptno = b.deptno
+집합을 줄일때도 뷰를 사용한다.
+사원과 부서테이블을 조인을 걸때 사원테이블을 부서별로 그룹핑을 한 후
+부서테이블을 조인걸면 1:1조인이 되므로 성능향상이 가능하다.
+위의 부서번호를 a.deptno에서 가져오는 것보다 b.deptno에서
+가져오면 훨씬 빠르게 가져온다.
+부서번호가 a.deptno하나 있다.
+SELECT ..
+  FROM emp_dept
+ WHERE deptno =:v1
